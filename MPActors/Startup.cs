@@ -23,6 +23,8 @@ namespace MPActors
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddRazorPages();
+            services.AddMiniProfiler(options => options.RouteBasePath = "/profiler");
+
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -36,6 +38,8 @@ namespace MPActors
             {
                 app.UseExceptionHandler("/Error");
             }
+
+            app.UseMiniProfiler();
 
             app.UseStaticFiles();
 
