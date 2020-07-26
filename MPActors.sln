@@ -1,0 +1,33 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.30320.27
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MPActors", "MPActors\MPActors.csproj", "{0F6EDC09-8A55-4E3A-9F9D-893FE1883401}"
+EndProject
+Project("{00D1A9C2-B5F0-4AF3-8072-F6C62B433612}") = "MPActorsDB", "MPActorsDB\MPActorsDB.sqlproj", "{F2C12278-D73B-4DB7-81CE-91CB79FB8566}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{0F6EDC09-8A55-4E3A-9F9D-893FE1883401}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0F6EDC09-8A55-4E3A-9F9D-893FE1883401}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0F6EDC09-8A55-4E3A-9F9D-893FE1883401}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0F6EDC09-8A55-4E3A-9F9D-893FE1883401}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F2C12278-D73B-4DB7-81CE-91CB79FB8566}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F2C12278-D73B-4DB7-81CE-91CB79FB8566}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F2C12278-D73B-4DB7-81CE-91CB79FB8566}.Debug|Any CPU.Deploy.0 = Debug|Any CPU
+		{F2C12278-D73B-4DB7-81CE-91CB79FB8566}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F2C12278-D73B-4DB7-81CE-91CB79FB8566}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F2C12278-D73B-4DB7-81CE-91CB79FB8566}.Release|Any CPU.Deploy.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {B381C047-1AD2-402A-998B-17502AB19D88}
+	EndGlobalSection
+EndGlobal
