@@ -7,6 +7,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MPActors", "MPActors\MPActo
 EndProject
 Project("{00D1A9C2-B5F0-4AF3-8072-F6C62B433612}") = "MPActorsDB", "MPActorsDB\MPActorsDB.sqlproj", "{F2C12278-D73B-4DB7-81CE-91CB79FB8566}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MPActorsConsole", "MPActorsConsole\MPActorsConsole.csproj", "{FD96DD3C-4011-4427-BEC3-28FB2F0643D3}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -23,6 +25,10 @@ Global
 		{F2C12278-D73B-4DB7-81CE-91CB79FB8566}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{F2C12278-D73B-4DB7-81CE-91CB79FB8566}.Release|Any CPU.Build.0 = Release|Any CPU
 		{F2C12278-D73B-4DB7-81CE-91CB79FB8566}.Release|Any CPU.Deploy.0 = Release|Any CPU
+		{FD96DD3C-4011-4427-BEC3-28FB2F0643D3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{FD96DD3C-4011-4427-BEC3-28FB2F0643D3}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{FD96DD3C-4011-4427-BEC3-28FB2F0643D3}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{FD96DD3C-4011-4427-BEC3-28FB2F0643D3}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
