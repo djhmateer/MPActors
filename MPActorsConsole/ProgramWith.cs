@@ -46,7 +46,6 @@ namespace MPActorsConsole
             public override string ToString() => $"{actorid} {name} {sex}";
         }
 
-        private const string ConnectionString = "Server=(localdb)\\mssqllocaldb;Database=IMDBChallenge;Trusted_Connection=True;MultipleActiveResultSets=true";
 
         public static Task<IEnumerable<Actor>> GetActorsx()
         {
@@ -63,15 +62,6 @@ namespace MPActorsConsole
             return foo;
         }
 
-        // function that does something
-        // we are passing in an IDbConnection
-        private static async Task<IEnumerable<Actor>> Bar(IDbConnection conn)
-        {
-            var result = await conn.QueryAsync<Actor>(@"SELECT TOP 10 * 
-                    FROM actors");
-            return result;
-        }
-
         // Wrapper function
         // does the connection to the db (
         private static async Task<T> WithConnection<T>(
@@ -84,9 +74,19 @@ namespace MPActorsConsole
             }
         }
 
+        // function that does something
+        // we are passing in an IDbConnection
+        private static async Task<IEnumerable<Actor>> Bar(IDbConnection conn)
+        {
+            var result = await conn.QueryAsync<Actor>(@"SELECT TOP 10 * 
+                    FROM actors");
+            return result;
+        }
+
         //private static async Task WithConnection(
         //    string connectionString,
         //    Func<IDbConnection, Task> connectionFunction)
+
         //{
         //    // await using?
         //    using (var conn = new SqlConnection("Server=(localdb)\\mssqllocaldb;Database=IMDBChallenge;Trusted_Connection=True;MultipleActiveResultSets=true"))
@@ -152,5 +152,8 @@ namespace MPActorsConsole
         //    Thread.Sleep(500);
         //    return 2;
         //}
+
+        private const string ConnectionString = "Server=(localdb)\\mssqllocaldb;Database=IMDBChallenge;Trusted_Connection=True;MultipleActiveResultSets=true";
+
     }
 }
