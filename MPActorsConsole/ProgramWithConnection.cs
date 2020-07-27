@@ -2,30 +2,24 @@
 using System.Collections.Generic;
 using System.Data;
 using System.Data.SqlClient;
-using System.Diagnostics;
-using System.Reflection;
-using System.Threading;
-using System.Threading.Tasks;
 using Dapper;
 
 namespace MPActorsConsole
 {
-    class ProgramW
+    class ProgramWC
     {
-        public static void MainW()
+        public static void MainWC()
         {
             Console.WriteLine("Experimenting with a HOF for db connection and using statements");
             Console.WriteLine("so don't have code duplication");
-            var actors = GetActors();
+            var actors = GetActors(ConnectionString);
 
             foreach (var actor in actors) Console.WriteLine(actor);
         }
 
         // Function 
-        public static IEnumerable<Actor> GetActors()
-            // calling a static function
-            // passing a multi line lambda (essentially another function) for the WithConnection to run
-            => WithConnection(conn =>
+        public static IEnumerable<Actor> GetActors(string connectionString)
+            => WithConnection<IEnumerable<Actor>>(connectionString, conn =>
             {
                var result = conn.Query<Actor>(
                    @"SELECT TOP 10 *
@@ -35,12 +29,17 @@ namespace MPActorsConsole
 
         // Wrapper returns a generic T eg IEnumerable<Actor>
         // It takes as arguments: A Func takes an IDbConnection (which is what we make here) and returns a T of the same type
-        public static T WithConnection<T>(Func<IDbConnection, T> func)
+        public static T WithConnection<T>(
+            string connectionString,
+            Func<IDbConnection, T> func)
         {
-            using var conn = new SqlConnection(ConnectionString);
+            using var conn = new SqlConnection(connectionString);
+
             conn.Open();
+
             return func(conn);
         }
+
 
         public class Actor
         {
