@@ -2,6 +2,8 @@
 using System.Collections.Generic;
 using System.Data;
 using System.Data.SqlClient;
+using System.Linq;
+using System.Resources;
 using System.Threading.Tasks;
 using Dapper;
 using Xunit;
@@ -21,12 +23,12 @@ namespace MPActorsConsole
         }
 
         [Fact]
-        public void ShouldBeAbleToGetActors()
+        public async void ShouldBeAbleToGetActors()
         {
             output.WriteLine("test message");
 
-            var result = await ProgramMPA.GetActors()
-            Assert.Equal(2,2);
+            var result = await ProgramMPA.GetActors(connectionString);
+            Assert.Equal(10,result.Count());
         }
     }
 
