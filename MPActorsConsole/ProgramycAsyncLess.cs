@@ -8,9 +8,9 @@ using Dapper;
 
 namespace MPActorsConsole
 {
-    class Program
+    class ProgramLess
     {
-        public static async Task Main()
+        public static async Task MainLess()
         {
             Console.WriteLine("Testing async more");
             //var actors = await GetActors();

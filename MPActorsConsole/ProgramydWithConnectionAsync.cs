@@ -11,23 +11,23 @@ namespace MPActorsConsole
     {
         private const string ConnectionString = "Server=(localdb)\\mssqllocaldb;Database=IMDBChallenge;Trusted_Connection=True;MultipleActiveResultSets=true";
 
-        public static async Task MainMPA()
+        public static async Task Main()
         {
             Console.WriteLine("Experimenting with a HOF for db connection and using statements");
             Console.WriteLine("so don't have code duplication");
-            var actors = await GetActorsAsync(ConnectionString);
+            var actors = await GetActors(ConnectionString);
 
             foreach (var actor in actors) Console.WriteLine(actor);
         }
 
         // Function 
-        public static async Task<IEnumerable<Actor>> GetActorsAsync(string connectionString)
+        public static async Task<IEnumerable<Actor>> GetActors(string connectionString)
             => await WithConnection(connectionString, async conn =>
             {
-               var result = await conn.QueryAsync<Actor>(
-                   @"SELECT TOP 10 *
+                var result = await conn.QueryAsync<Actor>(
+                    @"SELECT TOP 10 *
                    FROM Actors");
-               return result;
+                return result;
             });
 
         // Wrapper returns a generic T eg IEnumerable<Actor>
@@ -36,9 +36,9 @@ namespace MPActorsConsole
             string connectionString,
             Func<IDbConnection, Task<T>> func)
         {
-            await using var conn = new SqlConnection(connectionString);
+            using var conn = new SqlConnection(connectionString);
 
-            await conn.OpenAsync();
+            //conn.OpenAsync();
 
             return await func(conn);
         }
