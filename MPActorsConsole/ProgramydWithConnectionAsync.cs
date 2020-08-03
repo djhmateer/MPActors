@@ -27,7 +27,7 @@ namespace MPActorsConsole
         {
             output.WriteLine("test message");
 
-            var result = await ProgramMPA.GetActors(connectionString);
+            var result = await ProgramMPA.GetTop10Actors(connectionString);
             Assert.Equal(10,result.Count());
         }
     }
@@ -38,13 +38,13 @@ namespace MPActorsConsole
 
         public static async Task Main()
         {
-            var actors = await GetActors(ConnectionString);
+            var actors = await GetTop10Actors(ConnectionString);
 
             foreach (var actor in actors) Console.WriteLine(actor);
         }
 
         // Function 
-        public static async Task<IEnumerable<Actor>> GetActors(string connectionString)
+        public static async Task<IEnumerable<Actor>> GetTop10Actors(string connectionString)
             => await WithConnection(connectionString, async x =>
             {
                 var result = await x.QueryAsync<Actor>(

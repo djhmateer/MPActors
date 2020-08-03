@@ -13,7 +13,7 @@ namespace MPActorsConsole
         public static async Task MainLess()
         {
             Console.WriteLine("Testing async more");
-            //var actors = await GetActors();
+            //var actors = await GetTop10Actors();
             //foreach (var actor in actors) Console.WriteLine(actor);
 
             var actorsb = await GetActorsB();
