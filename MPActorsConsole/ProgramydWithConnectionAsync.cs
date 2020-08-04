@@ -23,16 +23,16 @@ namespace MPActorsConsole
         }
 
         [Fact]
-        public async void ShouldBeAbleToGetActors()
+        public async void ShouldBeAbleToGetTop10Actors()
         {
             output.WriteLine("test message");
 
-            var result = await ProgramMPA.GetTop10Actors(connectionString);
+            var result = await Program.GetTop10Actors(connectionString);
             Assert.Equal(10,result.Count());
         }
     }
 
-    public class ProgramMPA
+    public class Program
     {
         private const string ConnectionString = "Server=(localdb)\\mssqllocaldb;Database=IMDBChallenge;Trusted_Connection=True;MultipleActiveResultSets=true";
 
