@@ -4,6 +4,7 @@ using System.ComponentModel;
 using System.Data;
 using System.Data.SqlClient;
 using System.Linq;
+using System.Net.Http;
 using System.Resources;
 using System.Threading.Tasks;
 using Dapper;
@@ -15,16 +16,28 @@ using Xunit.Abstractions;
 
 namespace MPActorsConsole
 {
-    public class PollyWith
+    public class HttpPolly
     {
-        private const string ConnectionString = "Server=(localdb)\\mssqllocaldb;Database=IMDBChallenge;Trusted_Connection=True;MultipleActiveResultSets=true";
+        // test the Http polly
+        // copying the code in the Polly-Samples project
+        // and using their webapi test server
+        // https://localhost:44307
+        // http://pollytestapp.azurewebsites.net/Help
 
-        public static async Task MainPW()
+        public static async Task Main()
         {
-            //var actors = await GetTop10Actors(ConnectionString);
-            var actors = await GetTop10Actors(ConnectionString);
 
-            foreach (var actor in actors) Console.WriteLine(actor);
+            var httpClient = new HttpClient();
+
+            var url = "https://localhost:44307/api/values";
+
+            while (true)
+            {
+                var httpResponseMessage = await httpClient.GetAsync(url);
+
+                Console.WriteLine($"Status code is {httpResponseMessage.StatusCode}");
+            }
+
         }
 
         // Function 
