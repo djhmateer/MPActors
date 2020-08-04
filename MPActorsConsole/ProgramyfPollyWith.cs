@@ -22,18 +22,15 @@ namespace MPActorsConsole
         public static async Task Main()
         {
             //var actors = await GetTop10Actors(ConnectionString);
-            var actors = await GetTop10ActorsWithRetry(ConnectionString);
+            var actors = await GetTop10Actors(ConnectionString);
 
             foreach (var actor in actors) Console.WriteLine(actor);
         }
 
         // Function 
-        public static async Task<IEnumerable<Actor>> GetTop10ActorsWithRetry(string connectionString)
-            => await WithConnection(connectionString, async x =>
+        public static async Task<IEnumerable<Actor>> GetTop10Actors(string connectionString)
+            => await WithRetryConnection(connectionString, async x =>
             {
-                //var result = await x.QueryAsyncWithRetry<Actor>(
-                //    @"SELECT TOP 10 *
-                //    FROM Actors");
                 var result = await x.QueryAsync<Actor>(
                     @"SELECT TOP 10 *
                     FROM Actors");
@@ -43,7 +40,7 @@ namespace MPActorsConsole
 
         // Wrapper returns a generic T eg IEnumerable<Actor>
         // It takes as arguments: A Func takes an IDbConnection (which is what we make here) and returns a T of the same type
-        public static async Task<T> WithConnection<T>(
+        public static async Task<T> WithRetryConnection<T>(
             string connectionString,
             Func<IDbConnection, Task<T>> func)
         {
