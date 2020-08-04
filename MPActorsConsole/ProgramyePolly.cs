@@ -1,11 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Data;
 using System.Data.SqlClient;
 using System.Linq;
 using System.Resources;
 using System.Threading.Tasks;
 using Dapper;
+using MPActorsConsole.Polly;
+using Polly;
 using Xunit;
 using Xunit.Abstractions;
 
@@ -15,11 +18,27 @@ namespace MPActorsConsole
     {
         private const string ConnectionString = "Server=(localdb)\\mssqllocaldb;Database=IMDBChallenge;Trusted_Connection=True;MultipleActiveResultSets=true";
 
-        public static async Task Main()
+        public static async Task MainPO()
         {
-            var actors = await GetTop10Actors(ConnectionString);
+            //var actors = await GetTop10Actors(ConnectionString);
+            var actors = await GetTop10ActorsRetry(ConnectionString);
 
             foreach (var actor in actors) Console.WriteLine(actor);
+        }
+
+        public static async Task<IEnumerable<Actor>> GetTop10ActorsRetry(string connectionString)
+        {
+            using (var connection = GetOpenConnection())
+            {
+                //var result = await connection.QueryAsync<Actor>(
+                //    @"SELECT TOP 10 *
+                //    FROM Actors");
+
+                var result = await connection.QueryAsyncWithRetry<Actor>(@"SELECT TOP 10 * FROM Actors");
+
+                return result;
+            }
+
         }
 
         // Function 
@@ -49,6 +68,12 @@ namespace MPActorsConsole
             public string sex { get; set; }
 
             public override string ToString() => $"{actorid} {name} {sex}";
+        }
+
+        public static IDbConnection GetOpenConnection()
+        {
+            var connection = new SqlConnection("Server=(localdb)\\mssqllocaldb;Database=IMDBChallenge;Trusted_Connection=True;MultipleActiveResultSets=true");
+            return connection;
         }
     }
 }

@@ -1,55 +1,43 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Data;
 using System.Data.SqlClient;
 using System.Linq;
 using System.Resources;
 using System.Threading.Tasks;
 using Dapper;
+using MPActorsConsole.Polly;
+using Polly;
+using Polly.Retry;
 using Xunit;
 using Xunit.Abstractions;
 
 namespace MPActorsConsole
 {
-    public class MPATestsCA
-    {
-        private readonly ITestOutputHelper output;
-        private readonly string connectionString;
-
-        public MPATestsCA(ITestOutputHelper output)
-        {
-            this.output = output;
-            connectionString = "Server=(localdb)\\mssqllocaldb;Database=IMDBChallengeTest;Trusted_Connection=True;MultipleActiveResultSets=true";
-        }
-
-        [Fact]
-        public async void ShouldBeAbleToGetTop10Actors()
-        {
-            output.WriteLine("test message");
-
-            var result = await ProgramCA.GetTop10Actors(connectionString);
-            Assert.Equal(10,result.Count());
-        }
-    }
-
-    public class ProgramCA
+    public class PollyWith
     {
         private const string ConnectionString = "Server=(localdb)\\mssqllocaldb;Database=IMDBChallenge;Trusted_Connection=True;MultipleActiveResultSets=true";
 
-        public static async Task MainCA()
+        public static async Task Main()
         {
-            var actors = await GetTop10Actors(ConnectionString);
+            //var actors = await GetTop10Actors(ConnectionString);
+            var actors = await GetTop10ActorsWithRetry(ConnectionString);
 
             foreach (var actor in actors) Console.WriteLine(actor);
         }
 
         // Function 
-        public static async Task<IEnumerable<Actor>> GetTop10Actors(string connectionString)
+        public static async Task<IEnumerable<Actor>> GetTop10ActorsWithRetry(string connectionString)
             => await WithConnection(connectionString, async x =>
             {
+                //var result = await x.QueryAsyncWithRetry<Actor>(
+                //    @"SELECT TOP 10 *
+                //    FROM Actors");
                 var result = await x.QueryAsync<Actor>(
                     @"SELECT TOP 10 *
                     FROM Actors");
+
                 return result;
             });
 
@@ -60,7 +48,8 @@ namespace MPActorsConsole
             Func<IDbConnection, Task<T>> func)
         {
             await using var conn = new SqlConnection(connectionString);
-            return await func(conn);
+            //return await func(conn);
+            return await DapperExtensions.RetryPolicy.ExecuteAsync(() => func(conn));
         }
 
         public class Actor
