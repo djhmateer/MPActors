@@ -11,32 +11,11 @@ using Xunit.Abstractions;
 
 namespace MPActorsConsole
 {
-    public class MPATestsCA
-    {
-        private readonly ITestOutputHelper output;
-        private readonly string connectionString;
-
-        public MPATests(ITestOutputHelper output)
-        {
-            this.output = output;
-            connectionString = "Server=(localdb)\\mssqllocaldb;Database=IMDBChallengeTest;Trusted_Connection=True;MultipleActiveResultSets=true";
-        }
-
-        [Fact]
-        public async void ShouldBeAbleToGetTop10Actors()
-        {
-            output.WriteLine("test message");
-
-            var result = await Program.GetTop10Actors(connectionString);
-            Assert.Equal(10,result.Count());
-        }
-    }
-
-    public class ProgramCA
+    public class PollyStuff
     {
         private const string ConnectionString = "Server=(localdb)\\mssqllocaldb;Database=IMDBChallenge;Trusted_Connection=True;MultipleActiveResultSets=true";
 
-        public static async Task MainCA()
+        public static async Task Main()
         {
             var actors = await GetTop10Actors(ConnectionString);
 
