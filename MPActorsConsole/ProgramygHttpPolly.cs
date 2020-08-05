@@ -26,49 +26,209 @@ namespace MPActorsConsole
 
         public static async Task Main()
         {
+            //await NoPolicy();
+            //await RetryNTimes();
+            //await WaitAndRetryNTimes();
+            //await WaitAndRetryNTimesWithEnoughRetries();
+            await WaitAndRetryNTimesWithExponentialBackOff();
+        }
 
+        private static async Task WaitAndRetryNTimesWithExponentialBackOff()
+        {
+            var httpClient = new HttpClient();
+            var url = "https://localhost:44307/api/values";
+
+            // Define our policy:
+            var policy = Policy.Handle<Exception>().WaitAndRetryAsync(
+                6, // Could do forever ie miss this out, but good to do this 
+                attempt => TimeSpan.FromSeconds(0.1 * Math.Pow(2,
+                                                         attempt)), // Back off! 2,4,8,16 etc.. times 1/4-sec
+                (exception, calculatedWaitDuration) => // capture info for logging
+            {
+                Console.WriteLine($"{exception.Message} : Auto delay for {calculatedWaitDuration.TotalMilliseconds}ms");
+            });
+
+            while (true)
+            {
+                try
+                {
+                    await policy.ExecuteAsync(async () =>
+                    {
+                        var httpResponseMessage = await httpClient.GetAsync(url);
+                        // GetStringAsync throws if not a success
+                        //var content = await httpClient.GetStringAsync(url);
+
+                        // throws if .IsSuccessStatusCode property is false
+                        httpResponseMessage.EnsureSuccessStatusCode();
+
+                        var sc = httpResponseMessage.StatusCode;
+                        Console.WriteLine($"Status code is {(int)sc}{sc}");
+
+                        var content = await httpResponseMessage.Content.ReadAsStringAsync();
+                        Console.WriteLine($"Content is {content}");
+                    });
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine($"Request eventually failed with {ex.Message}");
+                }
+
+                await Task.Delay(500);
+            }
+        }
+
+        private static async Task WaitAndRetryNTimesWithEnoughRetries()
+        {
+            var httpClient = new HttpClient();
+            var url = "https://localhost:44307/api/values";
+
+            // Define our policy:
+            var policy = Policy.Handle<Exception>().WaitAndRetryAsync(
+                20, // Retry up to 20 times - should be enough that we eventually succeed
+                attempt => TimeSpan.FromMilliseconds(500), // Wait 200ms between each retry
+                (exception, calculationWithDuration) => // capture info for logging
+            {
+                Console.WriteLine($"Retrying after 200ms: {exception.Message} : {calculationWithDuration}");
+            });
+
+            while (true)
+            {
+                try
+                {
+                    await policy.ExecuteAsync(async () =>
+                    {
+                        var httpResponseMessage = await httpClient.GetAsync(url);
+                        // GetStringAsync throws if not a success
+                        //var content = await httpClient.GetStringAsync(url);
+
+                        // throws if .IsSuccessStatusCode property is false
+                        httpResponseMessage.EnsureSuccessStatusCode();
+
+                        var sc = httpResponseMessage.StatusCode;
+                        Console.WriteLine($"Status code is {(int)sc}{sc}");
+
+                        var content = await httpResponseMessage.Content.ReadAsStringAsync();
+                        Console.WriteLine($"Content is {content}");
+                    });
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine($"Request eventually failed with {ex.Message}");
+                }
+
+                await Task.Delay(500);
+            }
+        }
+
+
+        private static async Task WaitAndRetryNTimes()
+        {
+            var httpClient = new HttpClient();
+            var url = "https://localhost:44307/api/values";
+
+            // Define our policy:
+            var policy = Policy.Handle<Exception>().WaitAndRetryAsync(
+                3, // Retry 3 times
+                attempt => TimeSpan.FromMilliseconds(500), // Wait 200ms between each retry
+                (exception, calculationWithDuration) => // capture info for logging
+            {
+                Console.WriteLine($"Retrying after 200ms: {exception.Message} : {calculationWithDuration}");
+            });
+
+            while (true)
+            {
+                try
+                {
+                    await policy.ExecuteAsync(async () =>
+                    {
+                        var httpResponseMessage = await httpClient.GetAsync(url);
+                        // GetStringAsync throws if not a success
+                        //var content = await httpClient.GetStringAsync(url);
+
+                        // throws if .IsSuccessStatusCode property is false
+                        httpResponseMessage.EnsureSuccessStatusCode();
+
+                        var sc = httpResponseMessage.StatusCode;
+                        Console.WriteLine($"Status code is {(int)sc}{sc}");
+
+                        var content = await httpResponseMessage.Content.ReadAsStringAsync();
+                        Console.WriteLine($"Content is {content}");
+                    });
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine($"Request eventually failed with {ex.Message}");
+                }
+
+                await Task.Delay(500);
+            }
+        }
+
+        private static async Task RetryNTimes()
+        {
+            var httpClient = new HttpClient();
+            var url = "https://localhost:44307/api/values";
+
+            // Define our policy:
+            var policy = Policy.Handle<Exception>().RetryAsync(3, (exception, attempt) =>
+            {
+                // This is your new exception handler! 
+                Console.WriteLine($"Retrying immediately: {exception.Message} attempt: {attempt}");
+            });
+
+            while (true)
+            {
+                try
+                {
+                    await policy.ExecuteAsync(async () =>
+                    {
+                        var httpResponseMessage = await httpClient.GetAsync(url);
+                        // GetStringAsync throws if not a success
+                        //var content = await httpClient.GetStringAsync(url);
+
+                        Console.WriteLine($"{httpResponseMessage.IsSuccessStatusCode}");
+
+                        // throws if .IsSuccessStatusCode property is false
+                        httpResponseMessage.EnsureSuccessStatusCode();
+
+                        var sc = httpResponseMessage.StatusCode;
+                        Console.WriteLine($"Status code is {(int)sc}{sc}");
+
+                        var content = await httpResponseMessage.Content.ReadAsStringAsync();
+                        Console.WriteLine($"Content is {content}");
+                    });
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine($"Request eventually failed with {ex.Message}");
+                }
+
+                Console.WriteLine("here");
+
+                await Task.Delay(500);
+            }
+        }
+
+        private static async Task NoPolicy()
+        {
             var httpClient = new HttpClient();
 
             var url = "https://localhost:44307/api/values";
 
+            var totalRequests = 0;
             while (true)
             {
                 var httpResponseMessage = await httpClient.GetAsync(url);
+                totalRequests++;
 
-                Console.WriteLine($"Status code is {httpResponseMessage.StatusCode}");
+                var sc = httpResponseMessage.StatusCode;
+                Console.WriteLine($"Status code is {(int)sc}{sc} {totalRequests}");
+
+                var content = await httpResponseMessage.Content.ReadAsStringAsync();
+                Console.WriteLine($"Content is {content}");
+
+                await Task.Delay(1000);
             }
-
-        }
-
-        // Function 
-        public static async Task<IEnumerable<Actor>> GetTop10Actors(string connectionString)
-            => await WithRetryConnection(connectionString, async x =>
-            {
-                var result = await x.QueryAsync<Actor>(
-                    @"SELECT TOP 10 *
-                    FROM Actors");
-
-                return result;
-            });
-
-        // Wrapper returns a generic T eg IEnumerable<Actor>
-        // It takes as arguments: A Func takes an IDbConnection (which is what we make here) and returns a T of the same type
-        public static async Task<T> WithRetryConnection<T>(
-            string connectionString,
-            Func<IDbConnection, Task<T>> func)
-        {
-            await using var conn = new SqlConnection(connectionString);
-            //return await func(conn);
-            return await DapperExtensions.RetryPolicy.ExecuteAsync(() => func(conn));
-        }
-
-        public class Actor
-        {
-            public int actorid { get; set; }
-            public string name { get; set; }
-            public string sex { get; set; }
-
-            public override string ToString() => $"{actorid} {name} {sex}";
         }
     }
 }
